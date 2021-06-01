@@ -25,7 +25,7 @@ source ~/.github_aliases
 ##### EXPORT PATH
 export PATH="$PATH:$HOME/kafka_2.13-2.8.0/bin"
 
-##### TACTABLE SPECIFIC ALIASES
+##### SPECIFIC ALIASES
 source ~/.aliases
 
 ##### ZSH
@@ -34,7 +34,6 @@ fpath+=$HOME/.zsh/pure
 ##### DIRECTORIES
 alias ghd="cd $HOME/Documents/development/github"
 alias gld="cd $HOME/Documents/development/gitlab"
-alias iid="cd $HOME/IdeaProjects/"
 
 ##### EXECUTABLES
 source ~/.executables
