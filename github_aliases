@@ -1,0 +1,18 @@
+# A short list of GitHub aliases I often use.
+# There are many more but have been left out not all are
+# really necessary. Feel free to add more!
+# Reference: https://github.com/GitAlias/gitalias/blob/master/gitalias.txt
+
+alias gst="git status"
+alias ga="git add"
+alias gco="git checkout"
+alias gl="git pull"
+alias gcmsg="git commit -m"
+alias gpo="git push origin"
+alias gf=""git fetch
+alias gb="git branch"
+alias gcb="git branch --show-current"
+alias gcp="git cherry-pick"
+alias gco="git checkout"
+alias gr="git remote"
+alias gd="git diff"

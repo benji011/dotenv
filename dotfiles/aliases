@@ -1,0 +1,165 @@
+
+alias dsas="docker service ls -q | xargs docker service rm"
+#alias dsa="docker ps -q | xargs docker rm -f"
+alias dlsv="docker volume ls"
+alias dlsi="docker images"
+alias dlsc="docker container ls"
+alias dlsc-created="docker ps -q -f \"status=created\""
+alias dlsc-restarting="docker ps -q -f \"status=restarting\""
+alias dlsc-running="docker ps -q -f \"status=running\""
+alias dlsc-removing="docker ps -q -f \"status=removing\""
+alias dlsc-paused="docker ps -q -f \"status=paused\""
+alias dlsc-exited="docker ps -q -f \"status=exited\""
+alias dlsc-dead="docker ps -q -f \"status=dead\""
+alias ds="docker ps"
+alias dinfo="docker info"
+alias cip="curl https://freegeoip.app/json/$(dig @resolver1.opendns.com ANY myip.opendns.com +short)"
+alias localip="ipconfig getifaddr en0"
+
+#### Docker aliases
+# clean docker ps
+alias dps='docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}"'
+alias dpsa='docker ps -a --format "table {{.ID}}\t{{.Image}}\t{{.Status}}\t{{.Names}}"'
+# Kill all running containers.
+alias dsa='docker kill $(docker ps -q)'
+
+#shopt -s promptvars
+PS1='$(printf "%$((COLUMNS-1))s\r")'$PS1
+
+dcp() {
+  docker cp $@
+}
+dport(){
+  docker port $@
+}
+dtop(){
+  docker top $@
+}
+dpush(){
+  docker push $@
+}
+dlogin(){
+  docker login $@
+}
+dsearch(){
+  docker search $@
+}
+dimg(){
+  docker image $@
+}
+dd(){
+  docker diff $@
+}
+dsecret(){
+  docker secret $@
+}
+dstack(){
+  docker stack $@
+}
+dsystem(){
+  docker system $@
+}
+dlogs(){
+  docker logs $@
+}
+dvl(){
+  docker volume $@
+}
+dservice-ports(){
+  docker service inspect --format="{{json .Endpoint.Ports}}" $1
+}
+dp(){
+  docker pull $@
+}
+dl(){
+  docker logs $@
+}
+dstats(){
+  docker stats $@
+}
+dcr(){
+  docker-compose stop $1 && docker-compose rm -f -v $1 && docker-compose up -d $1
+}
+dc(){
+  docker-compose $@
+}
+dv(){
+  docker volume $@
+}
+dsrvc(){
+  docker service $@
+}
+dnode(){
+  docker node $@
+}
+dm(){
+  docker-machine $@
+}
+da(){
+  docker attach $@
+}
+dsw(){
+  docker swarm $@
+}
+dh(){
+  docker history $1
+}
+dx(){
+  docker exec $@
+}
+dstop(){
+  #docker container ls | awk '{ print $10 }' -  | grep $1 | xargs docker stop
+  docker stop $@
+}
+dnet(){
+  docker network $@
+}
+dcon(){
+  docker container $@
+}
+dr(){
+  docker container run $@
+}
+dcu(){
+  docker update $@
+}
+di(){
+  docker inspect $@ 
+}
+db(){
+  docker build $@
+}
+drmi(){
+  docker image rm $@
+}
+drmc(){
+  docker container rm $@
+}
+drm-all-tags(){
+  docker images | grep $1 | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi $1:{}
+}
+dt(){
+  docker tag $@
+}
+dtags() {
+  name=$1
+  # Initial URL
+  url=https://registry.hub.docker.com/v2/repositories/library/$name/tags/?page_size=100
+  (
+    # Keep looping until the variable URL is empty
+    while [ ! -z $url ]; do
+      # Every iteration of the loop prints out a single dot to show progress as it got through all the pages (this is inline dot)
+      >&2 echo -n "."
+      # Curl the URL and pipe the output to Python. Python will parse the JSON and print the very first line as the next URL (it will leave it blank if there are no more pages)
+      # then continue to loop over the results extracting only the name; all will be stored in a variable called content
+      content=$(curl -s $url | python -c 'import sys, json; data = json.load(sys.stdin); print(data.get("next", "") or ""); print("\n".join([x["name"] for x in data["results"]]))')
+      # Let's get the first line of content which contains the next URL for the loop to continue
+      url=$(echo "$content" | head -n 1)
+      # Print the content without the first line (yes +2 is counter intuitive)
+      echo "$content" | tail -n +2
+    done;
+    # Finally break the line of dots
+    >&2 echo
+  ) | cut -d '-' -f 1 | sort --version-sort | uniq;
+}
+
